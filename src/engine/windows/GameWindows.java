@@ -22,9 +22,9 @@ public class GameWindows extends Frame implements Runnable {
 
 
     private static int UPDATE_PER_SECOND = 60;
-    BufferedImage background;
-    Plane plane1;
-    Plane plane2;
+    private BufferedImage backgroundImage;
+    private Plane plane1;
+    private Plane plane2;
 
     int vectorLeft = 0;
     int vectorRight = 0;
@@ -64,7 +64,7 @@ public class GameWindows extends Frame implements Runnable {
         });
 
         try {
-            background = ImageIO.read(new File("Resources/Background.png"));
+            backgroundImage = ImageIO.read(new File("Resources/Background.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -94,6 +94,8 @@ public class GameWindows extends Frame implements Runnable {
                     case KeyEvent.VK_RIGHT:
                         vectorRight = 1;
                         break;
+                    case KeyEvent.VK_SPACE:
+                        plane1.shot();
                 }
             }
 
@@ -131,20 +133,21 @@ public class GameWindows extends Frame implements Runnable {
             //Lấy graphics ẩn
         }
         paint(second);
+        plane1.update();
         //Vẽ trên graphics ẩn
         g.drawImage(image, 0, 0, null);
     }
 
     @Override
     public void paint(Graphics g) {
-        g.drawImage(background, 0, 0, null);
+        g.drawImage(backgroundImage, 0, 0, null);
 
         //Draw theo phím
-        plane1.getPosition().x += plane1.getTickSpeed() * (vectorRight - vectorLeft);
-        plane1.getPosition().y += plane1.getTickSpeed() * (vectorDown - vectorUp);
 
-        g.drawImage(plane1.getImage(), plane1.getPosition().x, plane1.getPosition().y, null);
-        g.drawImage(plane2.getImage(), plane2.getPosition().x, plane2.getPosition().y, null);
+        plane1.setMovementVector(new MovementVector(vectorRight - vectorLeft, vectorDown - vectorUp));
+
+        plane1.draw(g);
+        plane2.draw(g);
     }
 
 
