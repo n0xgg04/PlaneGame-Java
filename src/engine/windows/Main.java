@@ -12,7 +12,9 @@ import java.io.IOException;
  */
 public class Main {
     public static void main(String[] args) throws IOException {
+        //Start Game Windows
         GameWindows gameWindows = new GameWindows();
         gameWindows.start();
+
     }
 }
