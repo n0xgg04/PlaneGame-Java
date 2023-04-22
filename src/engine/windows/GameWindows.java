@@ -22,10 +22,10 @@ public class GameWindows extends Frame implements Runnable {
 
 
     private static int UPDATE_PER_SECOND = 60;
-    private BufferedImage backgroundImage;
     private Plane plane1;
     private Plane plane2;
 
+    Background background;
     int vectorLeft = 0;
     int vectorRight = 0;
     int vectorUp = 0;
@@ -51,23 +51,21 @@ public class GameWindows extends Frame implements Runnable {
                 4
         );
 
+
         this.setTitle("Techdee");
         this.setFocusable(true);
         this.setSize(480, 800);
         this.setVisible(true);
         this.setResizable(false);
+
+        background = new Background(this.getWidth(), this.getHeight());
+
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 super.windowClosing(e);
                 dispose();
             }
         });
-
-        try {
-            backgroundImage = ImageIO.read(new File("Resources/Background.png"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         this.addKeyListener(new KeyListener() {
             @Override
@@ -140,7 +138,7 @@ public class GameWindows extends Frame implements Runnable {
 
     @Override
     public void paint(Graphics g) {
-        g.drawImage(backgroundImage, 0, 0, null);
+        background.draw(g);
 
         //Draw theo phím
 
