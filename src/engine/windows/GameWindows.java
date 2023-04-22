@@ -33,6 +33,15 @@ public class GameWindows extends Frame implements Runnable {
     private Image image;
     private Graphics second;
 
+    private EnemySubmarine enemySubmarine1;
+    private EnemySubmarine enemySubmarine2;
+    private EnemySubmarine enemySubmarine3;
+
+    private EnemyShip enemyShip1;
+    private EnemyShip enemyShip2;
+
+    private EnemyPlane enemyPlane;
+
     public GameWindows() {
         super();
         plane1 = new Plane(
@@ -51,6 +60,12 @@ public class GameWindows extends Frame implements Runnable {
                 4
         );
 
+        enemyPlane = new EnemyPlane(new Position(100,100));
+        enemyShip1 = new EnemyShip(new Position(150,200));
+        enemyShip2 = new EnemyShip(new Position(250,200));
+        enemySubmarine1 = new EnemySubmarine(new Position(100, 400));
+        enemySubmarine2 = new EnemySubmarine(new Position(160, 400));
+        enemySubmarine3 = new EnemySubmarine(new Position(220, 400));
 
         this.setTitle("Techdee");
         this.setFocusable(true);
@@ -143,6 +158,13 @@ public class GameWindows extends Frame implements Runnable {
         //Draw theo phím
 
         plane1.setMovementVector(new MovementVector(vectorRight - vectorLeft, vectorDown - vectorUp));
+
+        enemySubmarine1.draw(g);
+        enemySubmarine2.draw(g);
+        enemySubmarine3.draw(g);
+        enemyPlane.draw(g);
+        enemyShip1.draw(g);
+        enemyShip2.draw(g);
 
         plane1.draw(g);
         plane2.draw(g);
