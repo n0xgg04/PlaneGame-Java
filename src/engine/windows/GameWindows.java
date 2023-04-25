@@ -6,14 +6,10 @@
 package engine.windows;
 
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Tdh4vn
@@ -21,65 +17,45 @@ import java.io.IOException;
 public class GameWindows extends Frame implements Runnable {
 
 
-    private static int UPDATE_PER_SECOND = 60;
-    private Plane plane1;
-    private Plane plane2;
-
-    Background background;
-    int vectorLeft = 0;
-    int vectorRight = 0;
-    int vectorUp = 0;
-    int vectorDown = 0;
+    private static final int UPDATE_PER_SECOND = 60;
+    List<GameObject> gameObjects;
+    private Background gameBackground;
     private Image image;
     private Graphics second;
 
-    private EnemySubmarine enemySubmarine1;
-    private EnemySubmarine enemySubmarine2;
-    private EnemySubmarine enemySubmarine3;
-
-    private EnemyShip enemyShip1;
-    private EnemyShip enemyShip2;
-
-    private EnemyPlane enemyPlane;
-
     public GameWindows() {
         super();
-        plane1 = new Plane(
+        gameObjects = new ArrayList<>();
+        gameObjects.add(new Plane(
+                new Position(250, 100),
+                500,
+                50,
+                2,
+                4
+        ));
+
+        gameObjects.add(new EnemyPlane(new Position(100, 100)));
+        gameObjects.add(new EnemyShip(new Position(150, 200)));
+        gameObjects.add(new EnemyShip(new Position(250, 200)));
+        gameObjects.add(new EnemySubmarine(new Position(100, 400)));
+        gameObjects.add(new EnemySubmarine(new Position(160, 400)));
+        gameObjects.add(new EnemySubmarine(new Position(220, 400)));
+
+        Plane playerPlane = new Plane(
                 new Position(300, 300),
                 300,
                 15,
                 4,
                 1
         );
-
-        plane2 = new Plane(
-                new Position(250, 100),
-                500,
-                50,
-                2,
-                4
-        );
-        //123123
-        //123123
-        //123123
-        //123123
-        //123123
-        //123123
-        //123123
-        enemyPlane = new EnemyPlane(new Position(100,100));
-        enemyShip1 = new EnemyShip(new Position(150,200));
-        enemyShip2 = new EnemyShip(new Position(250,200));
-        enemySubmarine1 = new EnemySubmarine(new Position(100, 400));
-        enemySubmarine2 = new EnemySubmarine(new Position(160, 400));
-        enemySubmarine3 = new EnemySubmarine(new Position(220, 400));
-
+        gameObjects.add(playerPlane);
         this.setTitle("Techdee");
         this.setFocusable(true);
         this.setSize(480, 800);
         this.setVisible(true);
         this.setResizable(false);
 
-        background = new Background(this.getWidth(), this.getHeight());
+        gameBackground = new Background(this.getWidth(), this.getHeight());
 
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
@@ -88,58 +64,7 @@ public class GameWindows extends Frame implements Runnable {
             }
         });
 
-        this.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_A:
-                    case KeyEvent.VK_LEFT:
-                        vectorLeft = 1;
-                        break;
-                    case KeyEvent.VK_W:
-                    case KeyEvent.VK_UP:
-                        vectorUp = 1;
-                        break;
-                    case KeyEvent.VK_S:
-                    case KeyEvent.VK_DOWN:
-                        vectorDown = 1;
-                        break;
-                    case KeyEvent.VK_D:
-                    case KeyEvent.VK_RIGHT:
-                        vectorRight = 1;
-                        break;
-                    case KeyEvent.VK_SPACE:
-                        plane1.shot();
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_A:
-                    case KeyEvent.VK_LEFT:
-                        vectorLeft = 0;
-                        break;
-                    case KeyEvent.VK_W:
-                    case KeyEvent.VK_UP:
-                        vectorUp = 0;
-                        break;
-                    case KeyEvent.VK_S:
-                    case KeyEvent.VK_DOWN:
-                        vectorDown = 0;
-                        break;
-                    case KeyEvent.VK_D:
-                    case KeyEvent.VK_RIGHT:
-                        vectorRight = 0;
-                        break;
-                }
-            }
-        });
+        this.addKeyListener(playerPlane.getKeyListener());
     }
 
 
@@ -152,28 +77,22 @@ public class GameWindows extends Frame implements Runnable {
             //Lấy graphics ẩn
         }
         paint(second);
-        plane1.update();
+        for (GameObject gameObject : gameObjects) {
+            gameObject.update();
+        }
         //Vẽ trên graphics ẩn
         g.drawImage(image, 0, 0, null);
     }
 
     @Override
     public void paint(Graphics g) {
-        background.draw(g);
+        gameBackground.draw(g);
+
+        for (GameObject gameObject : gameObjects) {
+            gameObject.draw(g);
+        }
 
         //Draw theo phím
-
-        plane1.setMovementVector(new MovementVector(vectorRight - vectorLeft, vectorDown - vectorUp));
-
-        enemySubmarine1.draw(g);
-        enemySubmarine2.draw(g);
-        enemySubmarine3.draw(g);
-        enemyPlane.draw(g);
-        enemyShip1.draw(g);
-        enemyShip2.draw(g);
-
-        plane1.draw(g);
-        plane2.draw(g);
     }
 
 
