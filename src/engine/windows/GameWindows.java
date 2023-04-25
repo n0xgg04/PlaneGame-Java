@@ -59,7 +59,13 @@ public class GameWindows extends Frame implements Runnable {
                 2,
                 4
         );
-
+        //123123
+        //123123
+        //123123
+        //123123
+        //123123
+        //123123
+        //123123
         enemyPlane = new EnemyPlane(new Position(100,100));
         enemyShip1 = new EnemyShip(new Position(150,200));
         enemyShip2 = new EnemyShip(new Position(250,200));
