@@ -2,30 +2,29 @@ package engine.windows;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Plane {
-    private static int UPDATE_PER_SECOND = 60;
+public class Plane extends GameObject {
+    private static final int UPDATE_PER_SECOND = 60;
 
-    private Position position;
-
-    private int healthPoint;
+    private final int healthPoint;
+    private final int damage;
+    private final int speed; // speed * 100 pixel per seconds
+    private final int type;
+    private final List<GameObject> bullets = new ArrayList<>();
+    private final List<GameObject> invalidBullets = new ArrayList<>();
     private int currentHp;
-    private int damage;
-    private int speed; // speed * 100 pixel per seconds
-    private int type;
-    private BufferedImage image;
-
-    private List<Bullet> bullets = new ArrayList<>();
-    private List<Bullet> invalidBullets = new ArrayList<>();
-
     private MovementVector vector;
 
+    private KeyListener keyListener;
+
     public Plane(Position position, int healthPoint, int damage, int speed, int type) {
+        super(position);
         //this => current object, using this.property will differentiate name from the arguments
         this.position = position;
         this.healthPoint = healthPoint;
@@ -49,33 +48,51 @@ public class Plane {
                     image = ImageIO.read(new File("Resources/PLANE4.png"));
                     break;
             }
-        } catch (IOException ex){
+        } catch (IOException ex) {
             System.out.println("Error while loading plane image");
         }
+
+        keyListener = new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_A:
+                    case KeyEvent.VK_LEFT:
+                        position.x -= 5;
+                        break;
+                    case KeyEvent.VK_W:
+                    case KeyEvent.VK_UP:
+                        position.y -= 5;
+                        break;
+                    case KeyEvent.VK_S:
+                    case KeyEvent.VK_DOWN:
+                        position.y += 5;
+                        break;
+                    case KeyEvent.VK_D:
+                    case KeyEvent.VK_RIGHT:
+                        position.x += 5;
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        shot();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        };
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
-    public BufferedImage getImage() {
-        return image;
-    }
-
-    public int getSpeed() {
-        return speed;
-    }
-
-    public int getTickSpeed(){
-        //A method that return the amount of change in position between ticks.
-        return speed * 100 / UPDATE_PER_SECOND;
-    }
-
-    public void shot(){
+    public void shot() {
         int anchorX;
         int anchorY;
 
-        anchorX = position.x + image.getWidth()/2;
+        anchorX = position.x + image.getWidth() / 2;
         anchorY = position.y;
 
         Bullet bullet = new Bullet(new Position(anchorX, anchorY), 600);
@@ -84,9 +101,8 @@ public class Plane {
 
     public void draw(Graphics g) {
         g.drawImage(image, position.x, position.y, null);
-        for(int i = 0; i < bullets.size(); i++){
-            Bullet b = bullets.get(i);
-            b.draw(g);
+        for (GameObject bullet : bullets) {
+            bullet.draw(g);
         }
 
         g.setColor(Color.BLACK);
@@ -97,14 +113,18 @@ public class Plane {
     }
 
     public void update() {
-        this.position.x += this.getTickSpeed() * vector.x;
-        this.position.y += this.getTickSpeed() * vector.y;
-
-        for(int i = 0; i < bullets.size(); i++){
-            Bullet b = bullets.get(i);
+        for (int i = 0; i < bullets.size(); i++) {
+            GameObject b = bullets.get(i);
             b.update();
-            if(b.getPosition().x < 0 || b.getPosition().y < 0) {
+            if (b.getPosition().x < 0 || b.getPosition().y < 0) {
                 invalidBullets.add(b);
+            }
+        }
+
+        for (GameObject bullet : bullets) {
+            bullet.update();
+            if (bullet.getPosition().x < 0 || bullet.getPosition().y < 0) {
+                invalidBullets.add(bullet);
             }
         }
 
@@ -115,7 +135,12 @@ public class Plane {
     public void deductCurrentHp(int amount) {
         currentHp -= amount;
     }
+
     public void setMovementVector(MovementVector vector) {
         this.vector = vector;
+    }
+
+    public KeyListener getKeyListener() {
+        return keyListener;
     }
 }

@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
 public class Background {
     BufferedImage background1;
@@ -25,13 +24,13 @@ public class Background {
         this.windowsHeight = windowsHeight;
     }
 
-    public void draw(Graphics g){
+    public void draw(Graphics g) {
         int numberOfColumns = windowsWidth / 32 + 1;
         int numberOfRows = windowsHeight / 32 + 1;
 
-        for(int i = 0; i < numberOfRows; i++){
-            for(int j = 0; j < numberOfColumns; j++){
-                if(i+j % 2 == 0) {
+        for (int i = 0; i < numberOfRows; i++) {
+            for (int j = 0; j < numberOfColumns; j++) {
+                if (i + j % 2 == 0) {
                     g.drawImage(background1, j * 32, i * 32, null);
                 } else {
                     g.drawImage(background2, j * 32, i * 32, null);
