@@ -81,9 +81,6 @@ public class Plane extends GameObject {
                     case KeyEvent.VK_RIGHT:
                         goRight = 1;
                         break;
-                    case KeyEvent.VK_SPACE:
-                        shot();
-                        break;
                     case KeyEvent.VK_B:
                         explode();
                         break;
@@ -128,15 +125,14 @@ public class Plane extends GameObject {
         }
     }
 
-    public void shot() {
+    public Bullet shot() {
         int anchorX;
         int anchorY;
 
         anchorX = position.x + image.getWidth() / 2;
         anchorY = position.y;
-
         Bullet bullet = new Bullet(new Position(anchorX, anchorY), 600);
-        bullets.add(bullet);
+        return bullet;
     }
 
     public void draw(Graphics g) {
