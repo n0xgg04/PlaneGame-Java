@@ -13,7 +13,7 @@ import java.util.List;
 public class Plane extends GameObject {
     private static final int UPDATE_PER_SECOND = 60;
 
-    private final int healthPoint;
+    private int healthPoint;
     private final int damage;
     private final int speed; // speed * 100 pixel per seconds
     private final int type;
@@ -131,7 +131,7 @@ public class Plane extends GameObject {
 
         anchorX = position.x + image.getWidth() / 2;
         anchorY = position.y - 30;
-        Bullet bullet = new Bullet(new Position(anchorX, anchorY), 600);
+        Bullet bullet = new Bullet(new Position(anchorX, anchorY), 600, this.damage);
         return bullet;
     }
 
@@ -144,9 +144,13 @@ public class Plane extends GameObject {
         drawHealthBar(g);
     }
 
-    public void hitWithBullet() {
+    public void hitWithBullet(Bullet bullet) {
         //trừ máu
-        //Nếu hết máu thì hiện ra màn hình Console chữ "GameOver"
+        this.healthPoint -= bullet.dam;
+        //Nếu hết máu thì hiện animation nổ
+        if (this.healthPoint <= 0) {
+            this.exploding = true;
+        }
     }
 
     private void drawHealthBar(Graphics g) {

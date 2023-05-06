@@ -7,9 +7,11 @@ import java.io.IOException;
 public class Bullet extends GameObject {
     private static final int UPDATE_PER_SECOND = 60;
 
+    int dam = 0;
+
     private final int speed; //pixel per seconds
 
-    public Bullet(Position anchorPosition, int speed) {
+    public Bullet(Position anchorPosition, int speed, int dam) {
         super(anchorPosition);
         //Anchor Position: center of the bullet
         try {
@@ -21,6 +23,7 @@ public class Bullet extends GameObject {
         this.position.x -= image.getWidth() / 2;
         this.position.y -= image.getHeight();
         this.speed = speed;
+        this.dam = dam;
     }
 
     @Override
