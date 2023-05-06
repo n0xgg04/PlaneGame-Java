@@ -7,6 +7,8 @@ public class GameObject {
     protected Position position;
     protected BufferedImage image;
 
+    private boolean isDestroyed = false;
+
     public GameObject(Position position) {
         this.position = position;
     }
@@ -20,6 +22,14 @@ public class GameObject {
 
     public Position getPosition() {
         return position;
+    }
+
+    public void destroyGameObject() {
+        this.isDestroyed = true;
+    }
+
+    public boolean isDestroy() {
+        return isDestroyed;
     }
 
     public boolean isCollide(GameObject gameObject) {
