@@ -34,13 +34,6 @@ public class GameWindows extends Frame implements Runnable {
                 4
         ));
 
-        gameObjects.add(new EnemyPlane(new Position(100, 100)));
-        gameObjects.add(new EnemyShip(new Position(150, 200)));
-        gameObjects.add(new EnemyShip(new Position(250, 200)));
-        gameObjects.add(new EnemySubmarine(new Position(100, 400)));
-        gameObjects.add(new EnemySubmarine(new Position(160, 400)));
-        gameObjects.add(new EnemySubmarine(new Position(220, 400)));
-
         Plane playerPlane = new Plane(
                 new Position(300, 300),
                 300,
@@ -49,13 +42,13 @@ public class GameWindows extends Frame implements Runnable {
                 1
         );
         gameObjects.add(playerPlane);
+        this.setSize(480, 800);
+        gameBackground = new Background(this.getWidth(), this.getHeight());
         this.setTitle("Techdee");
         this.setFocusable(true);
-        this.setSize(480, 800);
         this.setVisible(true);
         this.setResizable(false);
 
-        gameBackground = new Background(this.getWidth(), this.getHeight());
 
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
@@ -87,12 +80,9 @@ public class GameWindows extends Frame implements Runnable {
     @Override
     public void paint(Graphics g) {
         gameBackground.draw(g);
-
         for (GameObject gameObject : gameObjects) {
             gameObject.draw(g);
         }
-
-        //Draw theo phím
     }
 
 

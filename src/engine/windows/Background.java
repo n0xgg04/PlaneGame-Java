@@ -9,6 +9,9 @@ import java.io.IOException;
 public class Background {
     BufferedImage background1;
     BufferedImage background2;
+    BufferedImage island1;
+    BufferedImage island2;
+    BufferedImage island3;
 
     int windowsWidth;
     int windowsHeight;
@@ -22,6 +25,15 @@ public class Background {
         }
         this.windowsWidth = windowsWidth;
         this.windowsHeight = windowsHeight;
+
+        try {
+            BufferedImage assets = ImageIO.read(new File("Resources/1945assets.png"));
+            island1 = assets.getSubimage(103, 499, 62, 62);
+            island2 = assets.getSubimage(103 + 66, 499, 62, 62);
+            island3 = assets.getSubimage(103 + 66 * 2, 499, 62, 62);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void draw(Graphics g) {
@@ -37,6 +49,14 @@ public class Background {
                 }
             }
         }
+
+        g.drawImage(island1, 120, 100, null);
+        g.drawImage(island1, 50, 600, null);
+        g.drawImage(island1, 370, 300, null);
+        g.drawImage(island2, 140, 200, null);
+        g.drawImage(island3, 350, 500, null);
+        g.drawImage(island3, 120, 360, null);
+        g.drawImage(island3, 10, 50, null);
 
     }
 }

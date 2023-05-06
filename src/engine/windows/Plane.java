@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,10 +19,14 @@ public class Plane extends GameObject {
     private final int type;
     private final List<GameObject> bullets = new ArrayList<>();
     private final List<GameObject> invalidBullets = new ArrayList<>();
+    int goUp;
+    int goDown;
+    int goLeft;
+    int goRight;
     private int currentHp;
-    private MovementVector vector;
-
     private KeyListener keyListener;
+    private Animation explodeAnimation;
+    private boolean exploding;
 
     public Plane(Position position, int healthPoint, int damage, int speed, int type) {
         super(position);
@@ -32,7 +37,6 @@ public class Plane extends GameObject {
         this.speed = speed;
         this.type = type;
         this.currentHp = healthPoint;
-
         try {
             switch (this.type) {
                 case 1:
@@ -63,29 +67,65 @@ public class Plane extends GameObject {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_A:
                     case KeyEvent.VK_LEFT:
-                        position.x -= 5;
+                        goLeft = 1;
                         break;
                     case KeyEvent.VK_W:
                     case KeyEvent.VK_UP:
-                        position.y -= 5;
+                        goUp = 1;
                         break;
                     case KeyEvent.VK_S:
                     case KeyEvent.VK_DOWN:
-                        position.y += 5;
+                        goDown = 1;
                         break;
                     case KeyEvent.VK_D:
                     case KeyEvent.VK_RIGHT:
-                        position.x += 5;
+                        goRight = 1;
                         break;
                     case KeyEvent.VK_SPACE:
                         shot();
+                        break;
+                    case KeyEvent.VK_B:
+                        explode();
+                        break;
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_A:
+                    case KeyEvent.VK_LEFT:
+                        goLeft = 0;
+                        break;
+                    case KeyEvent.VK_W:
+                    case KeyEvent.VK_UP:
+                        goUp = 0;
+                        break;
+                    case KeyEvent.VK_S:
+                    case KeyEvent.VK_DOWN:
+                        goDown = 0;
+                        break;
+                    case KeyEvent.VK_D:
+                    case KeyEvent.VK_RIGHT:
+                        goRight = 0;
+                        break;
+                }
             }
         };
+    }
+
+    private void explode() {
+        this.exploding = true;
+        try {
+            BufferedImage assets = ImageIO.read(new File("Resources/1945assets.png"));
+            List<BufferedImage> explodingImages = new ArrayList<>();
+            for (int i = 0; i < 7; i++) {
+                explodingImages.add(assets.getSubimage(i * 66 + 4, 301, 65, 65));
+            }
+            explodeAnimation = new Animation(750, explodingImages, true);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void shot() {
@@ -105,6 +145,11 @@ public class Plane extends GameObject {
             bullet.draw(g);
         }
 
+        drawHealthBar(g);
+    }
+
+    private void drawHealthBar(Graphics g) {
+        if (exploding) return;
         g.setColor(Color.BLACK);
         g.fillRect(position.x, position.y + image.getHeight(), image.getWidth(), 5);
         g.setColor(Color.GREEN);
@@ -130,14 +175,17 @@ public class Plane extends GameObject {
 
         bullets.removeAll(invalidBullets);
         invalidBullets.clear();
+
+        if (exploding) {
+            this.image = explodeAnimation.getCurrentImage();
+        }
+
+        this.position.x += (goRight - goLeft) * speed;
+        this.position.y += (goDown - goUp) * speed;
     }
 
     public void deductCurrentHp(int amount) {
         currentHp -= amount;
-    }
-
-    public void setMovementVector(MovementVector vector) {
-        this.vector = vector;
     }
 
     public KeyListener getKeyListener() {
