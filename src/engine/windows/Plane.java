@@ -130,7 +130,7 @@ public class Plane extends GameObject {
         int anchorY;
 
         anchorX = position.x + image.getWidth() / 2;
-        anchorY = position.y;
+        anchorY = position.y - 30;
         Bullet bullet = new Bullet(new Position(anchorX, anchorY), 600);
         return bullet;
     }
@@ -142,6 +142,11 @@ public class Plane extends GameObject {
         }
 
         drawHealthBar(g);
+    }
+
+    public void hitWithBullet() {
+        //trừ máu
+        //Nếu hết máu thì hiện ra màn hình Console chữ "GameOver"
     }
 
     private void drawHealthBar(Graphics g) {
