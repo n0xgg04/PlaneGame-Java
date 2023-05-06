@@ -149,7 +149,7 @@ public class Plane extends GameObject {
         this.healthPoint -= bullet.dam;
         //Nếu hết máu thì hiện animation nổ
         if (this.healthPoint <= 0) {
-            this.exploding = true;
+            this.explode();
         }
     }
 
